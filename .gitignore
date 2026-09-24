@@ -20,7 +20,7 @@
 /public/fonts/filament
 /public/hot
 /public/js/filament
-
+/public/storage
 /storage/*.key
 /storage/pail
 /vendor
