@@ -1,0 +1,1041 @@
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    color: #111;
+    background: #fff;
+    overflow-x: hidden;
+}
+
+body.menu-open {
+    overflow: hidden;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font-family: inherit;
+}
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+:root {
+    --black: #111111;
+    --white: #ffffff;
+
+    --blue: #1745d1;
+    --yellow: #ffd21c;
+
+    --gray: #777777;
+    --light-gray: #f2f2f2;
+
+    --container: 1440px;
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.container {
+    width: min(
+            calc(100% - 80px),
+            var(--container)
+    );
+
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    z-index: 20;
+
+    padding-top: 34px;
+}
+
+.header__inner {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.logo {
+    display: flex;
+    flex-direction: column;
+
+    line-height: 0.9;
+
+    font-weight: 800;
+    letter-spacing: -0.05em;
+
+    position: relative;
+
+    z-index: 30;
+}
+
+.logo__transfer {
+    font-size: 18px;
+}
+
+.logo__country {
+    font-size: 11px;
+
+    margin-top: 5px;
+
+    letter-spacing: 0.04em;
+}
+
+
+/* =========================================================
+   MENU BUTTON
+========================================================= */
+
+.menu-button,
+.menu-close {
+    width: 58px;
+    height: 58px;
+
+    border: 1px solid rgba(17, 17, 17, 0.2);
+
+    background: #fff;
+
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+    transition:
+            background 0.3s ease,
+            color 0.3s ease,
+            transform 0.3s ease;
+}
+
+.menu-button span {
+    display: block;
+
+    width: 20px;
+    height: 2px;
+
+    background: #111;
+
+    transition: transform 0.3s ease;
+}
+
+.menu-button:hover {
+    background: #111;
+}
+
+.menu-button:hover span {
+    background: #fff;
+}
+
+.menu-button:hover {
+    transform: rotate(5deg);
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+    min-height: 100vh;
+
+    padding-top: 140px;
+    padding-bottom: 70px;
+
+    display: flex;
+    align-items: center;
+}
+
+.hero__inner {
+    display: grid;
+
+    grid-template-columns:
+        minmax(400px, 0.9fr)
+        minmax(500px, 1.1fr);
+
+    gap: 70px;
+
+    align-items: center;
+}
+
+
+/* =========================================================
+   HERO CONTENT
+========================================================= */
+
+.hero__content {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 45px;
+}
+
+
+/* =========================================================
+   BLUE CIRCLE
+========================================================= */
+
+.hero__badge {
+    flex: 0 0 105px;
+
+    width: 105px;
+    height: 105px;
+
+    background: var(--blue);
+
+    border-radius: 50%;
+
+    position: relative;
+
+    margin-top: 16px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.hero__badge-center {
+    width: 50px;
+    height: 50px;
+
+    border: 1px solid rgba(255,255,255,.35);
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #fff;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 0.05em;
+}
+
+.hero__badge-stars {
+    position: absolute;
+
+    inset: 0;
+
+    animation: rotateStars 20s linear infinite;
+}
+
+.hero__badge-stars span {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 12px;
+
+    color: var(--yellow);
+
+    font-size: 10px;
+
+    transform:
+            rotate(calc(var(--i) * 30deg))
+            translateY(-41px);
+
+    transform-origin: center;
+}
+
+
+/* =========================================================
+   STARS POSITIONS
+========================================================= */
+
+.hero__badge-stars span:nth-child(1)  { transform: rotate(0deg) translateY(-42px); }
+.hero__badge-stars span:nth-child(2)  { transform: rotate(30deg) translateY(-42px); }
+.hero__badge-stars span:nth-child(3)  { transform: rotate(60deg) translateY(-42px); }
+.hero__badge-stars span:nth-child(4)  { transform: rotate(90deg) translateY(-42px); }
+.hero__badge-stars span:nth-child(5)  { transform: rotate(120deg) translateY(-42px); }
+.hero__badge-stars span:nth-child(6)  { transform: rotate(150deg) translateY(-42px); }
+.hero__badge-stars span:nth-child(7)  { transform: rotate(180deg) translateY(-42px); }
+.hero__badge-stars span:nth-child(8)  { transform: rotate(210deg) translateY(-42px); }
+.hero__badge-stars span:nth-child(9)  { transform: rotate(240deg) translateY(-42px); }
+.hero__badge-stars span:nth-child(10) { transform: rotate(270deg) translateY(-42px); }
+.hero__badge-stars span:nth-child(11) { transform: rotate(300deg) translateY(-42px); }
+.hero__badge-stars span:nth-child(12) { transform: rotate(330deg) translateY(-42px); }
+
+@keyframes rotateStars {
+
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =========================================================
+   HERO TEXT
+========================================================= */
+
+.hero__text {
+    max-width: 650px;
+}
+
+.hero h1 {
+    font-size: clamp(58px, 6vw, 105px);
+
+    line-height: 0.92;
+
+    letter-spacing: -0.065em;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+}
+
+.hero__subtitle {
+    margin-top: 35px;
+
+    font-size: 22px;
+
+    line-height: 1.2;
+
+    font-weight: 500;
+
+    letter-spacing: -0.025em;
+}
+
+.hero__description {
+    max-width: 490px;
+
+    margin-top: 22px;
+
+    font-size: 15px;
+
+    line-height: 1.65;
+
+    color: #666;
+
+    font-weight: 400;
+}
+
+
+/* =========================================================
+   HERO BUTTON
+========================================================= */
+
+.hero__button {
+    margin-top: 36px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 45px;
+
+    min-width: 220px;
+
+    padding: 18px 20px;
+
+    background: var(--black);
+
+    color: #fff;
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    border: 1px solid var(--black);
+
+    transition:
+            background 0.4s ease,
+            color 0.4s ease,
+            transform 0.4s ease,
+            gap 0.4s ease;
+}
+
+.hero__button span {
+    font-size: 20px;
+
+    transition: transform 0.4s ease;
+}
+
+.hero__button:hover {
+    background: #333;
+
+    transform: translateY(-3px);
+
+    gap: 60px;
+}
+
+.hero__button:hover span {
+    transform: translate(3px, -3px);
+}
+
+
+/* =========================================================
+   HERO IMAGE
+========================================================= */
+
+.hero__visual {
+    position: relative;
+
+    padding-right: 45px;
+}
+
+.hero__image-wrapper {
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio: 1.15 / 1;
+
+    overflow: hidden;
+
+    background: #eee;
+}
+
+.hero__image {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition:
+            transform 1s cubic-bezier(.2,.8,.2,1);
+}
+
+.hero__image-wrapper:hover .hero__image {
+    transform: scale(1.04);
+}
+
+
+/* =========================================================
+   IMAGE LABEL
+========================================================= */
+
+.hero__image-label {
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 25px;
+
+    padding: 17px 22px;
+
+    background: #fff;
+
+    font-size: 10px;
+
+    font-weight: 500;
+
+    letter-spacing: .1em;
+}
+
+.hero__image-label span:first-child {
+    color: var(--blue);
+}
+
+
+/* =========================================================
+   VERTICAL TEXT
+========================================================= */
+
+.hero__vertical-text {
+    position: absolute;
+
+    right: 0;
+    top: 50%;
+
+    transform:
+            translateY(-50%)
+            rotate(90deg);
+
+    transform-origin: center;
+
+    font-size: 10px;
+
+    font-weight: 500;
+
+    letter-spacing: .2em;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   INTRO
+========================================================= */
+
+.intro {
+    padding-top: 150px;
+    padding-bottom: 150px;
+
+    background: #f4f4f4;
+}
+
+.intro__grid {
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        2fr
+        1.2fr;
+
+    gap: 60px;
+}
+
+.section-number {
+    font-size: 11px;
+
+    font-weight: 500;
+
+    letter-spacing: .12em;
+}
+
+.intro h2 {
+    font-size: clamp(38px, 4vw, 65px);
+
+    line-height: .95;
+
+    letter-spacing: -.055em;
+
+    font-weight: 800;
+}
+
+.intro p {
+    font-size: 15px;
+
+    line-height: 1.7;
+
+    color: #666;
+}
+
+
+/* =========================================================
+   FULLSCREEN MENU
+========================================================= */
+
+.menu-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 100;
+
+    background: #111;
+
+    color: #fff;
+
+    visibility: hidden;
+
+    opacity: 0;
+
+    clip-path: circle(0% at calc(100% - 50px) 50px);
+
+    transition:
+            clip-path .7s cubic-bezier(.77,0,.18,1),
+            opacity .3s ease,
+            visibility .7s;
+}
+
+.menu-overlay.active {
+    visibility: visible;
+
+    opacity: 1;
+
+    clip-path: circle(150% at calc(100% - 50px) 50px);
+}
+
+.menu-overlay__top {
+    position: absolute;
+
+    top: 34px;
+    left: 0;
+
+    width: 100%;
+
+    padding-left: max(40px, calc((100% - var(--container)) / 2));
+    padding-right: max(40px, calc((100% - var(--container)) / 2));
+
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo--menu {
+    color: #fff;
+}
+
+.menu-close {
+    background: transparent;
+
+    border-color: rgba(255,255,255,.3);
+}
+
+.menu-close span {
+    position: absolute;
+
+    width: 22px;
+    height: 2px;
+
+    background: #fff;
+}
+
+.menu-close span:first-child {
+    transform: rotate(45deg);
+}
+
+.menu-close span:last-child {
+    transform: rotate(-45deg);
+}
+
+.menu-close:hover {
+    background: #fff;
+
+    transform: rotate(90deg);
+}
+
+.menu-close:hover span {
+    background: #111;
+}
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+.menu {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: min(900px, 80%);
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.menu__item {
+    display: grid;
+
+    grid-template-columns: 70px 1fr 50px;
+
+    align-items: center;
+
+    padding: 17px 0;
+
+    border-bottom: 1px solid rgba(255,255,255,.2);
+
+    transition:
+            padding .4s ease,
+            color .4s ease;
+}
+
+.menu__number {
+    font-size: 11px;
+
+    color: #777;
+
+    font-weight: 500;
+}
+
+.menu__text {
+    font-size: clamp(32px, 5vw, 70px);
+
+    line-height: 1;
+
+    font-weight: 800;
+
+    letter-spacing: -.06em;
+
+    text-transform: uppercase;
+}
+
+.menu__arrow {
+    justify-self: end;
+
+    width: 42px;
+    height: 42px;
+
+    border: 1px solid rgba(255,255,255,.3);
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 18px;
+
+    transition:
+            background .3s ease,
+            color .3s ease,
+            transform .3s ease;
+}
+
+.menu__item:hover {
+    padding-left: 20px;
+
+    color: var(--yellow);
+}
+
+.menu__item:hover .menu__arrow {
+    background: var(--yellow);
+
+    color: #111;
+
+    transform: rotate(45deg);
+}
+
+
+/* =========================================================
+   MENU BOTTOM
+========================================================= */
+
+.menu-overlay__bottom {
+    position: absolute;
+
+    bottom: 30px;
+    left: 0;
+
+    width: 100%;
+
+    padding-left: max(40px, calc((100% - var(--container)) / 2));
+    padding-right: max(40px, calc((100% - var(--container)) / 2));
+
+    display: flex;
+
+    justify-content: space-between;
+
+    color: #777;
+
+    font-size: 9px;
+
+    letter-spacing: .14em;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .container {
+        width: min(
+                calc(100% - 50px),
+                var(--container)
+        );
+    }
+
+    .hero__inner {
+        grid-template-columns: 1fr 1fr;
+
+        gap: 40px;
+    }
+
+    .hero__content {
+        gap: 25px;
+    }
+
+    .hero__badge {
+        flex-basis: 80px;
+
+        width: 80px;
+        height: 80px;
+    }
+
+    .hero__badge-stars span {
+        transform-origin: center;
+    }
+
+    .hero__subtitle {
+        font-size: 18px;
+    }
+
+    .hero__description {
+        font-size: 14px;
+    }
+
+    .hero__vertical-text {
+        display: none;
+    }
+
+    .intro__grid {
+        grid-template-columns: 1fr 2fr;
+    }
+
+    .intro__grid > div:last-child {
+        grid-column: 2;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767px) {
+
+    .container {
+        width: calc(100% - 32px);
+    }
+
+    .header {
+        padding-top: 20px;
+    }
+
+    .logo__transfer {
+        font-size: 15px;
+    }
+
+    .logo__country {
+        font-size: 9px;
+    }
+
+    .menu-button {
+        width: 48px;
+        height: 48px;
+    }
+
+
+    /* HERO */
+
+    .hero {
+        min-height: auto;
+
+        padding-top: 115px;
+        padding-bottom: 70px;
+    }
+
+    .hero__inner {
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 55px;
+    }
+
+    .hero__content {
+        display: block;
+    }
+
+    .hero__badge {
+        width: 78px;
+        height: 78px;
+
+        margin-bottom: 28px;
+        margin-top: 0;
+    }
+
+    .hero__badge-center {
+        width: 38px;
+        height: 38px;
+
+        font-size: 9px;
+    }
+
+    .hero__badge-stars span {
+        font-size: 8px;
+    }
+
+
+    .hero h1 {
+        font-size: clamp(48px, 15vw, 76px);
+
+        line-height: .9;
+    }
+
+    .hero__subtitle {
+        margin-top: 25px;
+
+        font-size: 17px;
+
+        line-height: 1.3;
+    }
+
+    .hero__description {
+        margin-top: 17px;
+
+        font-size: 13px;
+
+        max-width: 400px;
+    }
+
+    .hero__button {
+        margin-top: 27px;
+
+        width: 100%;
+
+        justify-content: space-between;
+    }
+
+
+    /* IMAGE */
+
+    .hero__visual {
+        padding-right: 0;
+
+        width: 100%;
+    }
+
+    .hero__image-wrapper {
+        aspect-ratio: .95 / 1;
+    }
+
+
+    /* INTRO */
+
+    .intro {
+        padding-top: 80px;
+        padding-bottom: 80px;
+    }
+
+    .intro__grid {
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 30px;
+    }
+
+    .intro h2 {
+        font-size: 42px;
+    }
+
+
+    /* MENU */
+
+    .menu-overlay__top {
+        top: 20px;
+
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .menu-close {
+        width: 48px;
+        height: 48px;
+    }
+
+    .menu {
+        width: calc(100% - 32px);
+    }
+
+    .menu__item {
+        grid-template-columns: 40px 1fr 35px;
+
+        padding: 14px 0;
+    }
+
+    .menu__text {
+        font-size: clamp(29px, 9vw, 52px);
+    }
+
+    .menu__arrow {
+        width: 32px;
+        height: 32px;
+
+        font-size: 14px;
+    }
+
+    .menu__item:hover {
+        padding-left: 0;
+    }
+
+    .menu-overlay__bottom {
+        padding-left: 16px;
+        padding-right: 16px;
+
+        bottom: 20px;
+
+        font-size: 8px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .hero h1 {
+        font-size: 45px;
+    }
+
+    .hero__subtitle {
+        font-size: 16px;
+    }
+
+    .menu__text {
+        font-size: 27px;
+    }
+
+}
