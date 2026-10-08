@@ -19,14 +19,14 @@
 </head>
 <body>
 
-<div class="preloader">
+{{--<div class="preloader">
     <div class="preloader__noise"></div>
     <div class="preloader__scanlines"></div>
 
     <div class="preloader__title">
         TRANSFER POINT
     </div>
-</div>
+</div>--}}
 
 <header class="header">
     <div class="container header__inner">
