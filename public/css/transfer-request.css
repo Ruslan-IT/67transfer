@@ -236,6 +236,12 @@
     margin-top: 6px;
 }
 
+.transfer-request__status--warn {
+    color: var(--tp-ink);
+    background: color-mix(in srgb, var(--tp-danger) 12%, var(--tp-paper));
+    border: 1px solid color-mix(in srgb, var(--tp-danger) 28%, var(--tp-line));
+}
+
 .transfer-request__status--ok {
     color: var(--tp-ink);
 }

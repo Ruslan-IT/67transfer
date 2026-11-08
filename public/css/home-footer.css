@@ -17,6 +17,8 @@
 
 .home-footer {
     --color-link-hover: #ffd21c;
+    flex-shrink: 0;
+    margin-top: auto;
     padding: 34px 0 24px;
     background: var(--home-footer-bg);
     color: var(--home-footer-fg);

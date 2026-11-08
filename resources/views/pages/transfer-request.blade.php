@@ -280,7 +280,7 @@
                     <section class="transfer-request__card">
                         <div class="transfer-request__tag">{!! $icon('eye') !!}Контакт</div>
                         <h1>Заявка отправлена</h1>
-                        <p class="transfer-request__status transfer-request__status--ok" role="status">{{ session('status') }}</p>
+                        <p class="transfer-request__status {{ session('status_mail_sent', true) ? 'transfer-request__status--ok' : 'transfer-request__status--warn' }}" role="status">{{ session('status') }}</p>
                         <p class="transfer-request__empty">
                             <a class="transfer-request__submit" href="{{ route('home') }}">Вернуться на главную</a>
                         </p>
@@ -317,7 +317,7 @@
             const button = form.querySelector("[data-send]");
 
             const unlock = () => {
-                form.dataset.sent = "";
+                delete form.dataset.sent;
 
                 if (button) {
                     button.disabled = false;
@@ -325,7 +325,6 @@
                 }
             };
 
-            // bfcache / «Назад»: не оставляем кнопку заблокированной.
             window.addEventListener("pageshow", (event) => {
                 if (event.persisted || form.dataset.sent === "1") {
                     unlock();
@@ -338,6 +337,7 @@
             });
 
             form.addEventListener("submit", (event) => {
+                // Повторный submit-event не должен уходить повторно.
                 if (form.dataset.sent === "1") {
                     event.preventDefault();
 
@@ -361,8 +361,11 @@
                     messages.push("Выберите WhatsApp или Telegram.");
                 }
 
+                // Всегда preventDefault: надёжный POST через form.submit(),
+                // иначе disabled/aria-busy в Chrome отменяют нативную отправку.
+                event.preventDefault();
+
                 if (messages.length) {
-                    event.preventDefault();
                     unlock();
 
                     if (status) {
@@ -380,14 +383,12 @@
                     status.classList.add("is-visible");
                 }
 
+                // Нативный submit() не триггерит повторно обработчик submit.
+                HTMLFormElement.prototype.submit.call(form);
+
                 if (button) {
                     button.setAttribute("aria-busy", "true");
-                    // Нельзя disabled синхронно в submit: браузер может отменить POST.
-                    queueMicrotask(() => {
-                        if (form.dataset.sent === "1") {
-                            button.disabled = true;
-                        }
-                    });
+                    button.disabled = true;
                 }
             });
         }

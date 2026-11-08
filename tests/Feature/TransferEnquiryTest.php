@@ -383,8 +383,93 @@ class TransferEnquiryTest extends TestCase
 
         $this->get(route('transfer.request'))
             ->assertOk()
-            ->assertSee('Заявка принята')
+            ->assertSee('Заявка успешно отправлена')
             ->assertDontSee('Аэропорт');
+    }
+
+    public function test_request_store_keeps_enquiry_when_mail_fails(): void
+    {
+        $outbound = now()->addDays(14)->toDateString();
+        $return = now()->addDays(20)->toDateString();
+        $this->postJson(route('transfer.continue'), $this->tripPayload($outbound, $return))->assertOk();
+
+        \Illuminate\Support\Facades\Mail::shouldReceive('raw')
+            ->once()
+            ->andThrow(new \RuntimeException('SMTP unavailable'));
+
+        $this->post(route('transfer.request.store'), [
+            'name' => 'Мария',
+            'phone' => '+34 600 333 444',
+            'messenger' => 'Telegram',
+            'flight_number' => 'VY100',
+        ])->assertRedirect(route('transfer.request'))
+            ->assertSessionHas('status', 'Заявка успешно отправлена. Мы свяжемся с вами в ближайшее время.')
+            ->assertSessionHas('status_mail_sent', true);
+
+        $this->assertDatabaseHas('enquiries', [
+            'kind' => 'transfer',
+            'name' => 'Мария',
+            'phone' => '+34 600 333 444',
+            'messenger' => 'Telegram',
+        ]);
+
+        $this->get(route('transfer.request'))
+            ->assertOk()
+            ->assertSee('Заявка успешно отправлена')
+            ->assertDontSee('Мария');
+    }
+
+    public function test_request_store_keeps_enquiry_when_mail_recipient_is_missing(): void
+    {
+        config(['mail.to.address' => null]);
+
+        $outbound = now()->addDays(15)->toDateString();
+        $return = now()->addDays(21)->toDateString();
+        $this->postJson(route('transfer.continue'), $this->tripPayload($outbound, $return))->assertOk();
+
+        $this->post(route('transfer.request.store'), [
+            'name' => 'Пётр',
+            'phone' => '+34 600 555 666',
+            'messenger' => 'WhatsApp',
+            'flight_number' => 'SU200',
+        ])->assertRedirect(route('transfer.request'))
+            ->assertSessionHas('status_mail_sent', false);
+
+        $this->assertDatabaseHas('enquiries', [
+            'name' => 'Пётр',
+            'phone' => '+34 600 555 666',
+            'messenger' => 'WhatsApp',
+        ]);
+        $this->assertCount(0, $this->messages());
+    }
+
+    public function test_json_enquiry_reports_mail_failure_without_dropping_record(): void
+    {
+        \Illuminate\Support\Facades\Mail::shouldReceive('raw')
+            ->once()
+            ->andThrow(new \RuntimeException('SMTP auth failed'));
+
+        $payload = $this->payload(now()->addDays(11)->toDateString(), now()->addDays(13)->toDateString());
+
+        $this->postJson(route('transfer.enquiry'), $payload)
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('mail_sent', true)
+            ->assertJsonPath(
+                'message',
+                'Заявка успешно отправлена. Мы свяжемся с вами в ближайшее время.'
+            );
+
+        $this->assertDatabaseCount('enquiries', 1);
+    }
+
+    public function test_request_page_submit_script_posts_via_native_form_submit(): void
+    {
+        $script = file_get_contents(resource_path('views/pages/transfer-request.blade.php'));
+        $this->assertIsString($script);
+        $this->assertStringContainsString('HTMLFormElement.prototype.submit.call(form)', $script);
+        $this->assertStringContainsString('event.preventDefault()', $script);
+        $this->assertStringNotContainsString('queueMicrotask', $script);
     }
 
     public function test_continue_requires_personal_data_consent(): void

@@ -160,27 +160,26 @@ class SiteController extends Controller
         }
 
         $stored = app(SiteEnquiry::class)->storeTransfer($validated);
+        $mailSent = true;
 
         if (! $stored['duplicate']) {
-            try {
-                $this->sendSiteMail(
-                    'Новая заявка на трансфер',
-                    $this->enquiryBody($validated),
-                    $this->replyAddress($validated),
-                );
-            } catch (\Throwable $exception) {
-                report($exception);
-            }
+            $mailSent = $this->sendSiteMail(
+                'Новая заявка на трансфер',
+                $this->enquiryBody($validated),
+                $this->replyAddress($validated),
+            );
         }
 
         logger()->info('Transfer enquiry stored', [
             'enquiry_id' => $stored['enquiry']->id,
             'duplicate' => $stored['duplicate'],
+            'mail_sent' => $mailSent,
         ]);
 
         return response()->json([
             'ok' => true,
-            'message' => 'Заявка принята. Мы свяжемся с вами, чтобы согласовать трансфер.',
+            'message' => $this->transferAcceptedMessage($mailSent),
+            'mail_sent' => $mailSent,
         ]);
     }
 
@@ -239,6 +238,11 @@ class SiteController extends Controller
     {
         $draft = $this->transferDraft();
 
+        logger()->info('Transfer request store hit', [
+            'has_draft' => is_array($draft),
+            'ip' => $request->ip(),
+        ]);
+
         if ($draft === null) {
             return redirect()->route('transfer.request');
         }
@@ -284,9 +288,10 @@ class SiteController extends Controller
         }
 
         $stored = app(SiteEnquiry::class)->storeTransfer($validated);
+        $mailSent = true;
 
         if (! $stored['duplicate']) {
-            $this->sendSiteMail(
+            $mailSent = $this->sendSiteMail(
                 'Новая заявка на трансфер',
                 $this->enquiryBody($validated),
                 $this->replyAddress($validated),
@@ -296,13 +301,15 @@ class SiteController extends Controller
         logger()->info('Transfer enquiry stored', [
             'enquiry_id' => $stored['enquiry']->id,
             'duplicate' => $stored['duplicate'],
+            'mail_sent' => $mailSent,
         ]);
 
         session()->forget(['transfer.draft', 'transfer_contact_errors']);
 
         return redirect()
             ->route('transfer.request')
-            ->with('status', 'Заявка принята. Мы свяжемся с вами, чтобы согласовать трансфер.');
+            ->with('status', $this->transferAcceptedMessage($mailSent))
+            ->with('status_mail_sent', $mailSent);
     }
 
     public function destination(Destination $destination): View
@@ -1164,15 +1171,23 @@ class SiteController extends Controller
         return mb_substr($text, 0, $max);
     }
 
-    private function sendSiteMail(string $subject, string $body, ?string $replyTo = null): void
+    /**
+     * Письмо — дополнительная операция после сохранения заявки.
+     *
+     * @return bool false только если письмо заведомо нельзя отправить (нет получателя).
+     *              true — письмо поставлено в отправку после HTTP-ответа.
+     *              Ошибки SMTP не откатывают заявку и не блокируют ответ клиенту.
+     */
+    private function sendSiteMail(string $subject, string $body, ?string $replyTo = null): bool
     {
         $to = config('mail.to.address');
 
-        if (! is_string($to) || $to === '') {
-            return;
+        if (! is_string($to) || trim($to) === '') {
+            logger()->warning('Site mail skipped: MAIL_TO_ADDRESS is empty');
+
+            return false;
         }
 
-        // После HTTP-ответа: SMTP не блокирует сохранение заявки и редирект/JSON.
         defer(function () use ($to, $subject, $body, $replyTo): void {
             try {
                 Mail::raw($body, function ($mail) use ($to, $subject, $replyTo): void {
@@ -1186,6 +1201,17 @@ class SiteController extends Controller
                 report($exception);
             }
         });
+
+        return true;
+    }
+
+    private function transferAcceptedMessage(bool $mailQueuedOrSent): string
+    {
+        if ($mailQueuedOrSent) {
+            return 'Заявка успешно отправлена. Мы свяжемся с вами в ближайшее время.';
+        }
+
+        return 'Заявка принята, но уведомление на электронную почту отправить не удалось. Мы получили вашу заявку и свяжемся с вами.';
     }
 
     /**
