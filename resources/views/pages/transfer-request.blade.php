@@ -316,6 +316,27 @@
             const status = form.querySelector("[data-request-status]");
             const button = form.querySelector("[data-send]");
 
+            const unlock = () => {
+                form.dataset.sent = "";
+
+                if (button) {
+                    button.disabled = false;
+                    button.removeAttribute("aria-busy");
+                }
+            };
+
+            // bfcache / «Назад»: не оставляем кнопку заблокированной.
+            window.addEventListener("pageshow", (event) => {
+                if (event.persisted || form.dataset.sent === "1") {
+                    unlock();
+
+                    if (status && status.textContent === "Отправляем заявку…") {
+                        status.textContent = "";
+                        status.classList.remove("is-visible");
+                    }
+                }
+            });
+
             form.addEventListener("submit", (event) => {
                 if (form.dataset.sent === "1") {
                     event.preventDefault();
@@ -342,6 +363,7 @@
 
                 if (messages.length) {
                     event.preventDefault();
+                    unlock();
 
                     if (status) {
                         status.textContent = messages.join(" ");
@@ -353,14 +375,19 @@
 
                 form.dataset.sent = "1";
 
-                if (button) {
-                    button.disabled = true;
-                    button.setAttribute("aria-busy", "true");
-                }
-
                 if (status) {
                     status.textContent = "Отправляем заявку…";
                     status.classList.add("is-visible");
+                }
+
+                if (button) {
+                    button.setAttribute("aria-busy", "true");
+                    // Нельзя disabled синхронно в submit: браузер может отменить POST.
+                    queueMicrotask(() => {
+                        if (form.dataset.sent === "1") {
+                            button.disabled = true;
+                        }
+                    });
                 }
             });
         }

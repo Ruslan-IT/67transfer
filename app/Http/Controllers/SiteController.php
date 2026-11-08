@@ -286,15 +286,11 @@ class SiteController extends Controller
         $stored = app(SiteEnquiry::class)->storeTransfer($validated);
 
         if (! $stored['duplicate']) {
-            try {
-                $this->sendSiteMail(
-                    'Новая заявка на трансфер',
-                    $this->enquiryBody($validated),
-                    $this->replyAddress($validated),
-                );
-            } catch (\Throwable $exception) {
-                report($exception);
-            }
+            $this->sendSiteMail(
+                'Новая заявка на трансфер',
+                $this->enquiryBody($validated),
+                $this->replyAddress($validated),
+            );
         }
 
         logger()->info('Transfer enquiry stored', [
@@ -302,7 +298,7 @@ class SiteController extends Controller
             'duplicate' => $stored['duplicate'],
         ]);
 
-        session()->forget('transfer.draft');
+        session()->forget(['transfer.draft', 'transfer_contact_errors']);
 
         return redirect()
             ->route('transfer.request')
@@ -1176,11 +1172,18 @@ class SiteController extends Controller
             return;
         }
 
-        Mail::raw($body, function ($mail) use ($to, $subject, $replyTo): void {
-            $mail->to($to)->subject($subject);
+        // После HTTP-ответа: SMTP не блокирует сохранение заявки и редирект/JSON.
+        defer(function () use ($to, $subject, $body, $replyTo): void {
+            try {
+                Mail::raw($body, function ($mail) use ($to, $subject, $replyTo): void {
+                    $mail->to($to)->subject($subject);
 
-            if (is_string($replyTo) && filter_var($replyTo, FILTER_VALIDATE_EMAIL)) {
-                $mail->replyTo($replyTo);
+                    if (is_string($replyTo) && filter_var($replyTo, FILTER_VALIDATE_EMAIL)) {
+                        $mail->replyTo($replyTo);
+                    }
+                });
+            } catch (\Throwable $exception) {
+                report($exception);
             }
         });
     }
