@@ -53,6 +53,10 @@
                 <span>Email</span>
                 <input type="email" name="email" value="{{ old('email') }}" placeholder="you@email.com" required>
             </label>
+            <div class="hp-field" aria-hidden="true">
+                <label>Сайт<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label>
+            </div>
+            @include('partials.personal-data-consent', ['consentError' => $errors->first('personal_data_consent')])
             <button class="button" type="submit">Запросить варианты <span>↗</span></button>
             <p class="fineprint">Transfer Point предоставляет информацию и помогает связаться с перевозчиком. Саму перевозку выполняют независимые компании.</p>
         </form>

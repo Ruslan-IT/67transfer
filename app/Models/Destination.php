@@ -21,8 +21,13 @@ class Destination extends Model
         'up',
         'login',
         'home',
+        'home-2',
+        'home-3',
         'blog',
         'contacts',
+        'privacy-policy',
+        'personal-data-consent',
+        'transfer',
     ];
 
     protected $fillable = [

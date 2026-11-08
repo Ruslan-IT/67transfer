@@ -1,18 +1,123 @@
-:root {
-    --ink: #111111;
-    --white: #ffffff;
-    --muted: #666666;
-    --line: rgba(17, 17, 17, 0.16);
-    --paper: #f4f4f4;
+/* Регистрируем цвета, чтобы смена темы могла их плавно интерполировать. */
+@property --color-bg { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --color-surface { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --color-surface-secondary { syntax: "<color>"; inherits: true; initial-value: #f4f4f4; }
+@property --color-text { syntax: "<color>"; inherits: true; initial-value: #111111; }
+@property --color-text-secondary { syntax: "<color>"; inherits: true; initial-value: #666666; }
+@property --color-header-bg { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --color-card-bg { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --color-button-bg { syntax: "<color>"; inherits: true; initial-value: #111111; }
+@property --color-button-text { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --color-border { syntax: "<color>"; inherits: true; initial-value: #d6d6d6; }
+@property --color-primary { syntax: "<color>"; inherits: true; initial-value: #1745d1; }
+@property --color-primary-hover { syntax: "<color>"; inherits: true; initial-value: #1236a8; }
+@property --color-link-hover { syntax: "<color>"; inherits: true; initial-value: #2f6bff; }
+@property --color-accent { syntax: "<color>"; inherits: true; initial-value: #ffd21c; }
+@property --color-overlay { syntax: "<color>"; inherits: true; initial-value: #111111; }
+@property --color-overlay-text { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --color-overlay-muted { syntax: "<color>"; inherits: true; initial-value: #777777; }
+@property --color-theme-switch-bg { syntax: "<color>"; inherits: true; initial-value: #f2f2f2; }
+@property --color-theme-switch-active { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --color-form-bg { syntax: "<color>"; inherits: true; initial-value: #f4f0e8; }
+@property --color-form-navy { syntax: "<color>"; inherits: true; initial-value: #1c3557; }
+@property --color-form-sand { syntax: "<color>"; inherits: true; initial-value: #f7f4ef; }
+@property --color-form-line { syntax: "<color>"; inherits: true; initial-value: #e4dfd6; }
+@property --color-form-link { syntax: "<color>"; inherits: true; initial-value: #2457c5; }
+@property --color-form-selected { syntax: "<color>"; inherits: true; initial-value: #e7f1fb; }
+@property --color-form-muted { syntax: "<color>"; inherits: true; initial-value: #6f6a62; }
+@property --color-form-placeholder { syntax: "<color>"; inherits: true; initial-value: #9a958c; }
+@property --color-form-on-navy { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+@property --color-form-navy-hover { syntax: "<color>"; inherits: true; initial-value: #152844; }
+@property --color-form-disabled { syntax: "<color>"; inherits: true; initial-value: #c4bfb6; }
+@property --color-form-error { syntax: "<color>"; inherits: true; initial-value: #9f2d2d; }
+@property --color-form-shadow { syntax: "<color>"; inherits: true; initial-value: #1c35571a; }
+
+/* =========================================
+   НАСТРОЙКИ ЦВЕТОВ СВЕТЛОЙ ТЕМЫ
+   Меняйте значения здесь — интерфейс подхватит их
+   без админки и без правки разметки.
+   ========================================= */
+
+:root,
+[data-theme="light"] {
+    color-scheme: light;
+
+    --color-bg: #ffffff;
+    --color-surface: #ffffff;
+    --color-surface-secondary: #f4f4f4;
+
+    --color-text: #1C3557;
+    --color-text-secondary: #666666;
+
+    --color-border: rgba(17, 17, 17, 0.16);
+
+    --color-primary: #1745d1;
+    --color-primary-hover: #1236a8;
+    --color-primary-text: #ffffff;
+    --color-link-hover: #2f6bff;
+
+    --color-input-bg: #ffffff;
+    --color-input-border: rgba(17, 17, 17, 0.2);
+
+    --color-header-bg: #ffffff;
+    --color-card-bg: #ffffff;
+
+    --color-success: #1f7a3a;
+    --color-success-bg: #eef5ea;
+    --color-danger: #da121a;
+    --color-danger-bg: #fdecec;
+    --color-danger-text: #7a1f1f;
+    --color-warning-bg: #fff6d8;
+
+    --color-theme-switch-bg: #f2f2f2;
+    --color-theme-switch-active: #ffffff;
+
+    /* Дополнительно к базовой палитре сайта */
+    --color-accent: #ffd21c;              /* жёлтый акцент меню */
+    --color-on-accent: #111111;
+    --color-button-bg: #111111;
+    --color-button-text: #ffffff;
+    --color-button-hover: #333333;
+    --color-on-button-muted: rgba(255, 255, 255, 0.6);
+    --color-overlay: #111111;             /* полноэкранное меню */
+    --color-overlay-text: #ffffff;
+    --color-overlay-muted: #777777;
+    --color-overlay-line: rgba(255, 255, 255, 0.2);
+    --color-media-placeholder: #eeeeee;   /* подложка под фото, само фото не красится */
+    --color-shadow: rgba(17, 17, 17, 0.08);
+    --color-disabled: #bbbbbb;
+    --color-backdrop: rgba(17, 17, 17, 0.55);
+    --color-logo-plate: transparent;
+
+    /* Форма трансфера. Светлые значения совпадают с текущим макетом. */
+    --color-form-bg: #f4f0e8;
+    --color-form-sand: #f7f4ef;
+    --color-form-navy: #1c3557;
+    --color-form-navy-hover: #152844;
+    --color-form-on-navy: #ffffff;
+    --color-form-line: #e4dfd6;
+    --color-form-link: #2457c5;
+    --color-form-selected: #e7f1fb;
+    --color-form-muted: #6f6a62;
+    --color-form-placeholder: #9a958c;
+    --color-form-disabled: #c4bfb6;
+    --color-form-error: #9f2d2d;
+    --color-form-shadow: rgba(28, 53, 87, 0.1);
+
+    /* Прежние имена. Не удаляйте: на них опираются существующие правила. */
+    --ink: var(--color-text);
+    --white: var(--color-surface);
+    --muted: var(--color-text-secondary);
+    --line: var(--color-border);
+    --paper: var(--color-surface-secondary);
+    --black: var(--color-button-bg);
+    --blue: var(--color-primary);
+    --yellow: var(--color-accent);
+    --gray: var(--color-text-secondary);
+    --light-gray: var(--color-surface-secondary);
 
     --container: 1540px;
     --gap-logo: 0.24;
-
-    --black: #111111;
-    --blue: #1745d1;
-    --yellow: #ffd21c;
-    --gray: #777777;
-    --light-gray: #f2f2f2;
 
     --font-main: Inter, sans-serif;
 
@@ -23,6 +128,85 @@
     --text-weight: 500;
     --text-line: 1.2;
     --text-spacing: -0.025em;
+}
+
+/* =========================================
+   НАСТРОЙКИ ЦВЕТОВ ТЁМНОЙ ТЕМЫ
+   ========================================= */
+
+[data-theme="dark"] {
+    color-scheme: dark;
+
+    --color-bg: #121418;
+    --color-surface: #1c2129;
+    --color-surface-secondary: #171b22;
+
+    --color-text: #f3f4f6;
+    --color-text-secondary: #b0b6c0;
+
+    --color-border: rgba(255, 255, 255, 0.14);
+
+    --color-primary: #8ea4ff;
+    --color-primary-hover: #a8b8ff;
+    --color-primary-text: #10131a;
+    --color-link-hover: #ffd21c;
+
+    --color-input-bg: #1c2129;
+    --color-input-border: rgba(255, 255, 255, 0.18);
+
+    --color-header-bg: #161a21;
+    --color-card-bg: #1c2129;
+
+    --color-success: #54c98b;
+    --color-success-bg: #173226;
+    --color-danger: #ff8b8b;
+    --color-danger-bg: #3a2226;
+    --color-danger-text: #ffc7c7;
+    --color-warning-bg: #3a3114;
+
+    --color-theme-switch-bg: #2a303a;
+    --color-theme-switch-active: #3d4654;
+
+    --color-accent: #ffd21c;
+    --color-on-accent: #111111;
+    --color-button-bg: #f3f4f6;
+    --color-button-text: #121418;
+    --color-button-hover: #ffffff;
+    --color-on-button-muted: rgba(18, 20, 24, 0.62);
+    --color-overlay: #0e1116;
+    --color-overlay-text: #f3f4f6;
+    --color-overlay-muted: #9aa3b2;
+    --color-overlay-line: rgba(255, 255, 255, 0.16);
+    --color-media-placeholder: #2a303a;
+    --color-shadow: rgba(0, 0, 0, 0.35);
+    --color-disabled: #6d7582;
+    --color-backdrop: rgba(0, 0, 0, 0.62);
+    --color-logo-plate: #ffffff;
+
+    --color-form-bg: #16130f;
+    --color-form-sand: #2a261f;
+    --color-form-navy: #6d86ff;
+    --color-form-navy-hover: #8aa0ff;
+    --color-form-on-navy: #ffffff;
+    --color-form-line: #3f382e;
+    --color-form-link: #b9c7ff;
+    --color-form-selected: #3a3428;
+    --color-form-muted: #c4bbae;
+    --color-form-placeholder: #9c9488;
+    --color-form-disabled: #6f675e;
+    --color-form-error: #ff8b8b;
+    --color-form-shadow: rgba(0, 0, 0, 0.35);
+
+    --ink: var(--color-text);
+    --white: var(--color-surface);
+    --muted: var(--color-text-secondary);
+    --line: var(--color-border);
+    --paper: var(--color-surface-secondary);
+    --black: var(--color-button-bg);
+    --blue: var(--color-primary);
+    --yellow: var(--color-accent);
+    --gray: var(--color-text-secondary);
+    --light-gray: var(--color-surface-secondary);
 }
 
 
@@ -39,14 +223,70 @@ h1 {
 
 body {
     font-family: Inter, sans-serif;
-    color: var(--ink);
-    background: var(--white);
+    color: var(--color-text);
+    background: var(--color-bg);
     min-height: 100vh;
 }
 
 img { max-width: 100%; display: block; }
-a { color: inherit; text-decoration: none; }
-button, input { font: inherit; color: inherit; }
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/*
+ * Текстовые ссылки: мягкая смена цвета.
+ * Кнопочные и «карточные» ссылки исключены — у них свои hover-правила.
+ * Transition только вне смены темы, иначе цвет накладывается на интерполяцию токенов.
+ */
+@media (prefers-reduced-motion: no-preference) {
+    html.theme-ready:not(.theme-animating) a {
+        transition: color 0.22s ease;
+    }
+}
+
+a:hover:not(
+    .logo,
+    .wordmark,
+    .card,
+    .card--photo,
+    .contact-card,
+    .menu__item,
+    .blog-card__media,
+    .home-cta__button,
+    .hero__button,
+    .pager__btn,
+    .pager__page,
+    .transfer-request__submit
+),
+a:focus-visible:not(
+    .logo,
+    .wordmark,
+    .card,
+    .card--photo,
+    .contact-card,
+    .menu__item,
+    .blog-card__media,
+    .home-cta__button,
+    .hero__button,
+    .pager__btn,
+    .pager__page,
+    .transfer-request__submit
+) {
+    color: var(--color-link-hover);
+}
+
+button, input, textarea, select {
+    font: inherit;
+    color: inherit;
+    background-color: transparent;
+}
+
+::placeholder {
+    color: var(--color-text-secondary);
+    opacity: 1;
+}
 
 .container {
     width: min(calc(100% - 48px), var(--container));
@@ -57,8 +297,8 @@ button, input { font: inherit; color: inherit; }
     position: sticky;
     top: 0;
     z-index: 20;
-    background: var(--white);
-    border-bottom: 1px solid var(--line);
+    background: var(--color-header-bg);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .header__inner {
@@ -98,7 +338,7 @@ button, input { font: inherit; color: inherit; }
 .wordmark__primary { font-size: 18px; }
 .wordmark__secondary { font-size: 16.875px; } /* 93.75% */
 
-.wordmark--inverse { color: var(--white); }
+.wordmark--inverse { color: var(--color-overlay-text); }
 
 .icon-button {
     width: 48px;
@@ -121,7 +361,7 @@ button, input { font: inherit; color: inherit; }
 
 .icon-button--ghost {
     background: transparent;
-    border-color: rgba(255,255,255,.28);
+    border-color: var(--color-overlay-line);
 }
 
 .icon-button__x,
@@ -129,7 +369,7 @@ button, input { font: inherit; color: inherit; }
     display: block;
     width: 16px;
     height: 2px;
-    background: var(--white);
+    background: var(--color-overlay-text);
     content: "";
 }
 
@@ -189,8 +429,8 @@ h2 {
     gap: 32px;
     min-width: 220px;
     padding: 16px 18px;
-    background: var(--ink);
-    color: var(--white);
+    background: var(--color-button-bg);
+    color: var(--color-button-text);
     font-size: 13px;
     font-weight: 500;
     border: 0;
@@ -244,7 +484,7 @@ h2 {
     position: relative;
     color: var(--ink);
     text-decoration: none;
-    background: #fff;
+    background: var(--color-card-bg);
     overflow: hidden;
     transition:
         transform 0.5s cubic-bezier(.22, .61, .36, 1),
@@ -337,7 +577,7 @@ h2 {
     background: var(--ink);
     border-color: var(--ink);
 
-    color: #fff;
+    color: var(--color-button-text);
 }
 
 .card:hover .card__badge {
@@ -346,7 +586,7 @@ h2 {
 
 .card:hover .card__kicker,
 .card:hover .card__meta {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--color-on-button-muted);
 }
 
 .card:hover strong {
@@ -374,7 +614,7 @@ h2 {
     position: absolute;
     inset: 0;
     padding: 24px;
-    color: var(--white);
+    color: var(--color-overlay-text);
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -407,31 +647,15 @@ h2 {
 }
 
 .notice { padding: 12px; background: var(--paper); font-size: 14px; font-weight: 500; }
-.notice--error { color: #DA121A; }
+.notice--error { color: var(--color-danger); }
 .fineprint { font-size: 13px; line-height: 1.6; color: var(--muted); }
-
-.footer {
-    border-top: 1px solid var(--line);
-    padding: 48px 0 32px;
-}
-
-.footer__grid {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr 1fr;
-    gap: 32px;
-}
-
-.footer__descriptor { margin-top: 16px; color: var(--muted); max-width: 28ch; font-size: 14px; }
-.footer__label { font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
-.footer__links { display: grid; gap: 8px; font-weight: 500; }
-.footer__note { margin-top: 32px; color: var(--muted); font-size: 13px; }
 
 .menu {
     position: fixed;
     inset: 0;
     z-index: 40;
-    background: var(--ink);
-    color: var(--white);
+    background: var(--color-overlay);
+    color: var(--color-overlay-text);
     padding: 24px;
     display: flex;
     flex-direction: column;
@@ -446,14 +670,14 @@ h2 {
     grid-template-columns: 48px 1fr;
     align-items: center;
     padding: 16px 0;
-    border-bottom: 1px solid rgba(255,255,255,.2);
+    border-bottom: 1px solid var(--color-overlay-line);
     font-size: clamp(28px, 5vw, 56px);
     font-weight: 800;
     letter-spacing: -0.04em;
     text-transform: uppercase;
 }
-.menu__nav span { font-size: 12px; font-weight: 500; color: #777; }
-.menu__bottom { color: #777; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
+.menu__nav span { font-size: 12px; font-weight: 500; color: var(--color-overlay-muted); }
+.menu__bottom { color: var(--color-overlay-muted); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
 
 body.menu-open { overflow: hidden; }
 
@@ -478,14 +702,14 @@ body.menu-open { overflow: hidden; }
 
 .blog-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 18px 40px rgba(17, 17, 17, 0.08);
+    box-shadow: 0 18px 40px var(--color-shadow);
 }
 
 .blog-card__media {
     display: block;
     overflow: hidden;
     aspect-ratio: 16 / 10;
-    background: #eee;
+    background: var(--color-media-placeholder);
 }
 
 .blog-card__media img {
@@ -577,7 +801,7 @@ body.menu-open { overflow: hidden; }
 
 .article__cover {
     overflow: hidden;
-    background: #eee;
+    background: var(--color-media-placeholder);
 }
 
 .article__cover img {
@@ -636,19 +860,19 @@ body.menu-open { overflow: hidden; }
 
 .pager__btn:hover,
 .pager__page:hover {
-    background: var(--black);
-    color: #fff;
-    border-color: var(--black);
+    background: var(--color-button-bg);
+    color: var(--color-button-text);
+    border-color: var(--color-button-bg);
 }
 
 .pager__page--current {
-    background: var(--black);
-    color: #fff;
-    border-color: var(--black);
+    background: var(--color-button-bg);
+    color: var(--color-button-text);
+    border-color: var(--color-button-bg);
 }
 
 .pager__btn--disabled {
-    color: #bbb;
+    color: var(--color-disabled);
     pointer-events: none;
 }
 
@@ -683,14 +907,14 @@ body.menu-open { overflow: hidden; }
     min-height: 120px;
     padding: 22px;
     border: 1px solid var(--line);
-    background: #fff;
+    background: var(--color-card-bg);
     transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
 }
 
 a.contact-card:hover {
     transform: translateY(-4px);
     border-color: var(--ink);
-    box-shadow: 0 16px 36px rgba(17, 17, 17, 0.08);
+    box-shadow: 0 16px 36px var(--color-shadow);
 }
 
 .contact-card__icon {
@@ -733,7 +957,7 @@ a.contact-card:hover {
 .contacts-map {
     width: 100%;
     height: min(62vh, 520px);
-    background: #eee;
+    background: var(--color-media-placeholder);
 }
 
 .contacts-map iframe {
@@ -759,7 +983,7 @@ a.contact-card:hover {
 .modal__backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(17, 17, 17, 0.55);
+    background: var(--color-backdrop);
 }
 
 .modal__dialog {
@@ -778,7 +1002,8 @@ a.contact-card:hover {
     height: 42px;
     border: 1px solid var(--line);
     border-radius: 50%;
-    background: #fff;
+    background: var(--color-surface);
+    color: var(--color-text);
     cursor: pointer;
 }
 
@@ -787,7 +1012,7 @@ a.contact-card:hover {
     left: 11px;
     width: 18px;
     height: 2px;
-    background: #111;
+    background: var(--color-text);
 }
 
 .modal__close span:first-child { transform: rotate(45deg); }
@@ -800,7 +1025,7 @@ body.modal-open { overflow: hidden; }
 }
 
 @media (max-width: 900px) {
-    .hero__grid, .request, .footer__grid, .split, .blog-grid, .contacts__list { grid-template-columns: 1fr; }
+    .hero__grid, .request, .split, .blog-grid, .contacts__list { grid-template-columns: 1fr; }
     .wordmark { min-width: 0; }
     h1 { max-width: none; }
     .article__title { max-width: none; }
@@ -809,4 +1034,437 @@ body.modal-open { overflow: hidden; }
     .contacts-map { height: 46vh; }
     .modal { padding: 12px; align-items: end; }
     .modal__dialog { width: 100%; }
+}
+
+.theme-switch {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 3px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-theme-switch-bg);
+}
+
+.theme-switch__thumb {
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    left: 3px;
+    width: calc(50% - 3px);
+    border-radius: 999px;
+    background: var(--color-theme-switch-active);
+    box-shadow: 0 1px 2px var(--color-shadow);
+}
+
+html[data-theme="dark"] .theme-switch__thumb {
+    transform: translateX(100%);
+}
+
+.theme-switch__btn {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+}
+
+.theme-switch__btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+html[data-theme="light"] .theme-switch__btn[data-theme-choice="light"],
+html[data-theme="dark"] .theme-switch__btn[data-theme-choice="dark"],
+html:not([data-theme]) .theme-switch__btn[data-theme-choice="light"] {
+    color: var(--color-text);
+}
+
+.theme-switch__btn:hover {
+    color: var(--color-text);
+}
+
+.theme-switch__btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    /*
+     * Плавная смена темы через сами цветовые токены.
+     * Так фон формы и её текст (form-muted/navy/…) меняются синхронно —
+     * без мигания от мгновенного текста на ещё анимирующемся фоне.
+     */
+    html.theme-ready {
+        transition:
+            --color-bg 0.25s ease,
+            --color-surface 0.25s ease,
+            --color-surface-secondary 0.25s ease,
+            --color-text 0.25s ease,
+            --color-text-secondary 0.25s ease,
+            --color-header-bg 0.25s ease,
+            --color-card-bg 0.25s ease,
+            --color-button-bg 0.25s ease,
+            --color-button-text 0.25s ease,
+            --color-border 0.25s ease,
+            --color-primary 0.25s ease,
+            --color-primary-hover 0.25s ease,
+            --color-link-hover 0.25s ease,
+            --color-accent 0.25s ease,
+            --color-overlay 0.25s ease,
+            --color-overlay-text 0.25s ease,
+            --color-overlay-muted 0.25s ease,
+            --color-theme-switch-bg 0.25s ease,
+            --color-theme-switch-active 0.25s ease,
+            --color-form-bg 0.25s ease,
+            --color-form-navy 0.25s ease,
+            --color-form-sand 0.25s ease,
+            --color-form-line 0.25s ease,
+            --color-form-link 0.25s ease,
+            --color-form-selected 0.25s ease,
+            --color-form-muted 0.25s ease,
+            --color-form-placeholder 0.25s ease,
+            --color-form-on-navy 0.25s ease,
+            --color-form-navy-hover 0.25s ease,
+            --color-form-disabled 0.25s ease,
+            --color-form-error 0.25s ease,
+            --color-form-shadow 0.25s ease;
+    }
+
+    .theme-switch__thumb,
+    .theme-switch__btn {
+        transition: transform 0.22s ease, color 0.22s ease, background-color 0.22s ease;
+    }
+}
+
+@media (max-width: 767px) {
+    .theme-switch__btn {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+.hp-field {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.consent-line {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin: 16px 0;
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.consent-line input {
+    margin-top: 3px;
+}
+
+.consent-line a {
+    color: var(--color-form-link, var(--color-primary));
+}
+
+.consent-line a:hover,
+.consent-line a:focus-visible {
+    color: var(--color-link-hover);
+}
+
+.consent-line__error {
+    margin: -8px 0 12px;
+    color: var(--color-danger);
+    font-size: 13px;
+}
+
+.legal-doc {
+    overflow-wrap: anywhere;
+}
+
+.legal-doc__inner {
+    max-width: 1080px;
+}
+
+.legal-doc h1 {
+    max-width: none;
+    font-size: clamp(28px, 3.4vw, 40px);
+    line-height: 1.2;
+    text-transform: none;
+}
+
+.legal-doc__updated,
+.legal-doc__operator,
+.legal-doc__body {
+    margin-top: 24px;
+}
+
+.legal-doc__body h2,
+.legal-doc__operator h2 {
+    max-width: none;
+    margin: 28px 0 10px;
+    font-size: clamp(20px, 2.4vw, 24px);
+    line-height: 1.3;
+}
+
+.legal-doc__body p,
+.legal-doc__operator p,
+.legal-doc__body ul,
+.legal-doc__body ol {
+    margin: 0 0 12px;
+}
+
+.legal-doc__body ul,
+.legal-doc__body ol {
+    padding-left: 1.25em;
+}
+
+.legal-doc__body li + li {
+    margin-top: 6px;
+}
+
+.legal-doc__body a,
+.legal-doc__operator a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.legal-doc__body a:hover,
+.legal-doc__body a:focus-visible,
+.legal-doc__operator a:hover,
+.legal-doc__operator a:focus-visible {
+    color: var(--color-link-hover);
+}
+
+@media (max-width: 760px) {
+    .legal-doc.section {
+        padding: 40px 0;
+    }
+
+    .legal-doc h1 {
+        font-size: clamp(24px, 7vw, 32px);
+    }
+
+    .legal-doc__body h2,
+    .legal-doc__operator h2 {
+        margin-top: 22px;
+        font-size: 20px;
+    }
+}
+
+.cookie-banner {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+    z-index: 40;
+    display: flex;
+    justify-content: flex-end;
+    pointer-events: none;
+}
+
+.cookie-banner[hidden],
+.cookie-panel[hidden] {
+    display: none !important;
+}
+
+.cookie-banner__card {
+    width: min(440px, 100%);
+    padding: 20px 22px;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: var(--color-card-bg);
+    color: var(--color-text);
+    box-shadow: 0 12px 40px var(--color-shadow);
+    pointer-events: auto;
+}
+
+.cookie-banner__card > p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.cookie-banner__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.cookie-banner button,
+.cookie-panel button {
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    padding: 10px 16px;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+.cookie-banner__primary {
+    background: var(--color-button-bg) !important;
+    color: var(--color-button-text) !important;
+    border-color: transparent !important;
+}
+
+body.cookie-open {
+    overflow: hidden;
+}
+
+.cookie-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: max(24px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+    box-sizing: border-box;
+}
+
+.cookie-panel__backdrop {
+    position: absolute;
+    inset: 0;
+    background: var(--color-backdrop);
+}
+
+.cookie-panel__dialog {
+    position: relative;
+    z-index: 1;
+    width: min(480px, 100%);
+    max-height: min(90vh, 680px);
+    margin: 0;
+    padding: 28px 28px 24px;
+    overflow-y: auto;
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    background: var(--color-card-bg);
+    color: var(--color-text);
+    box-shadow: 0 18px 48px var(--color-shadow);
+    box-sizing: border-box;
+}
+
+.cookie-panel__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.cookie-panel__head h2 {
+    margin: 0;
+    font-size: 22px;
+    line-height: 1.25;
+}
+
+.cookie-panel__close {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 999px;
+    font-size: 22px;
+    line-height: 1;
+}
+
+.cookie-panel__intro {
+    margin: 14px 0 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--color-text-secondary);
+}
+
+.cookie-panel__choices {
+    margin: 20px 0 0;
+    padding: 0;
+    border: 0;
+    min-inline-size: 0;
+}
+
+.cookie-choice {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin: 0;
+    padding: 16px 0;
+    border-top: 1px solid var(--color-border);
+    cursor: pointer;
+}
+
+.cookie-choice:first-child {
+    border-top: 0;
+    padding-top: 4px;
+}
+
+.cookie-choice input {
+    margin-top: 4px;
+    flex: 0 0 auto;
+}
+
+.cookie-choice strong {
+    display: block;
+    font-size: 15px;
+    line-height: 1.35;
+}
+
+.cookie-choice small {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--color-text-secondary);
+}
+
+.cookie-panel__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.cookie-panel__actions .cookie-banner__primary {
+    width: 100%;
+    justify-content: center;
+}
+
+@media (max-width: 700px) {
+    .cookie-banner {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+    }
+
+    .cookie-banner__card {
+        width: 100%;
+        padding: 18px;
+    }
+
+    .cookie-panel {
+        align-items: flex-end;
+        padding: 12px 12px max(12px, env(safe-area-inset-bottom));
+    }
+
+    .cookie-panel__dialog {
+        width: 100%;
+        max-height: min(88vh, 720px);
+        padding: 22px 20px 18px;
+        border-radius: 18px 18px 14px 14px;
+    }
+
+    .cookie-panel__head h2 {
+        font-size: 20px;
+    }
 }

@@ -1,0 +1,626 @@
+/* Home 2: scroll-scrubbed porthole scene. Loaded only on /home-2. */
+
+body:has(.h2-flight) .header {
+    background: transparent;
+    border-bottom-color: transparent;
+}
+
+body:has(.h2-flight) .header .logo-img {
+    padding: 6px 10px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.h2-flight {
+    --h2-stage-h: 100vh;
+    --h2-runway: 200vh;
+    --h2-bleed: 96px;
+    --h2-layer-scale: 1.2857;
+    --h2-sky-deep: #015aa9;
+    position: relative;
+    isolation: isolate;
+    background: #15110d;
+    overflow-x: clip;
+}
+
+@supports (height: 100lvh) {
+    .h2-flight {
+        --h2-stage-h: 100lvh;
+    }
+}
+
+/* ---------- Stage (sticky camera) ---------- */
+
+.h2-stage {
+    position: sticky;
+    top: 0;
+    z-index: 0;
+    height: var(--h2-stage-h);
+    overflow: hidden;
+    pointer-events: none;
+    user-select: none;
+}
+
+.h2-stage img {
+    display: block;
+    max-width: none;
+}
+
+.h2-sky {
+    position: absolute;
+    top: 0;
+    left: calc(var(--h2-bleed) * -1);
+    right: calc(var(--h2-bleed) * -1);
+    z-index: 0;
+    height: 200%;
+    transform-origin: 50% 25%;
+    will-change: transform;
+}
+
+.h2-sky__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.h2-sky__band {
+    position: absolute;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    transform-origin: 50% 0;
+    will-change: transform;
+}
+
+.h2-sky__band--near {
+    top: 0;
+    height: 44%;
+}
+
+.h2-sky__band--far {
+    top: 9%;
+    height: 24%;
+    opacity: 0.55;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 40%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 40%);
+}
+
+.h2-sky__track {
+    display: flex;
+    width: max-content;
+    height: 100%;
+    animation: h2-drift 52s linear infinite;
+    will-change: transform;
+}
+
+.h2-sky__band--far .h2-sky__track {
+    animation-duration: 96s;
+    animation-direction: reverse;
+}
+
+.h2-sky__track img {
+    flex: none;
+    width: auto;
+    height: 100%;
+}
+
+@keyframes h2-drift {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+
+    to {
+        transform: translate3d(-50%, 0, 0);
+    }
+}
+
+.h2-wisps {
+    position: absolute;
+    inset: -20% -30%;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transform-origin: 50% 46%;
+    will-change: transform, opacity;
+}
+
+.h2-wisps img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.h2-cloudwall {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    overflow: hidden;
+    opacity: 0;
+    background:
+        radial-gradient(75% 60% at 50% 52%, rgba(255, 255, 255, 0.92) 0%, rgba(241, 247, 254, 0.7) 45%, rgba(224, 238, 252, 0.25) 80%, rgba(224, 238, 252, 0) 100%);
+    will-change: opacity;
+}
+
+.h2-cloudwall__puff {
+    position: absolute;
+    left: 50%;
+    width: auto;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 38%, #000 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 38%, #000 100%);
+    will-change: transform;
+}
+
+.h2-cloudwall__puff--a {
+    top: 4%;
+    height: 46%;
+}
+
+.h2-cloudwall__puff--b {
+    top: 36%;
+    height: 58%;
+}
+
+.h2-cloudwall__puff--c {
+    top: 62%;
+    height: 50%;
+    opacity: 0.85;
+}
+
+/* ---------- Cabin (wall, shade, pane) ---------- */
+
+.h2-cabin {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--h2-bleed) * -1);
+    right: calc(var(--h2-bleed) * -1);
+    z-index: 2;
+    transform-origin: 50% 50%;
+    will-change: transform;
+}
+
+.h2-cabin__layer {
+    position: absolute;
+    inset: 0;
+    transform: scale(var(--h2-layer-scale));
+}
+
+.h2-cabin__layer > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.h2-cabin__pane {
+    z-index: 0;
+}
+
+.h2-cabin__window {
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.h2-cabin__window-fit {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 2;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.h2-cabin__window-box {
+    position: relative;
+    width: 18.96%;
+    aspect-ratio: 1 / 1.38;
+    margin-bottom: 1%;
+    margin-left: 0.4%;
+}
+
+.h2-cabin__shade {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    transform: translateY(-92%);
+}
+
+.h2-cabin__shade-sheet {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.2) 80%, rgba(0, 0, 0, 0.35) 100%),
+        repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.035) 0 2px, rgba(255, 255, 255, 0.04) 2px 9px),
+        #dbdbdb;
+    transform: scaleY(0.5);
+    transform-origin: 50% 100%;
+}
+
+.h2-cabin__shade-handle {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    margin-bottom: -12px;
+}
+
+.h2-cabin__shade-handle--lit {
+    z-index: 1;
+}
+
+.h2-cabin__glass {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background:
+        linear-gradient(118deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.05) 26%, rgba(255, 255, 255, 0) 42%),
+        radial-gradient(120% 90% at 50% 110%, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0) 60%);
+    mix-blend-mode: screen;
+}
+
+.h2-cabin__wall {
+    z-index: 2;
+}
+
+.h2-cabin__glow {
+    z-index: 3;
+    opacity: 0.55;
+}
+
+/* ---------- Stage overlays and copy ---------- */
+
+.h2-stage__vignette,
+.h2-stage__haze,
+.h2-stage__tint {
+    position: absolute;
+    inset: 0;
+}
+
+.h2-stage__vignette {
+    z-index: 3;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0.42));
+}
+
+.h2-stage__tint {
+    z-index: 3;
+    opacity: 0;
+    background: linear-gradient(180deg, rgba(1, 90, 169, 0.15) 0%, rgba(1, 90, 169, 0.55) 55%, rgba(1, 90, 169, 0.78) 100%);
+}
+
+.h2-stage__haze {
+    z-index: 4;
+    opacity: 0;
+    background:
+        radial-gradient(60% 55% at 50% 48%, rgba(255, 255, 255, 0.95) 0%, rgba(232, 244, 255, 0.6) 45%, rgba(214, 234, 252, 0) 78%);
+}
+
+.h2-stage__copy {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    color: #f6f1ea;
+}
+
+.h2-stage__title {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    font-size: clamp(34px, 5.4vw, 92px);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 0.92;
+    text-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+    will-change: transform, opacity;
+}
+
+.h2-stage__title--left {
+    top: calc(50% - 2.05em);
+    left: max(24px, 5vw);
+}
+
+.h2-stage__title--right {
+    top: calc(50% + 0.15em);
+    right: max(24px, 5vw);
+    align-items: flex-end;
+    text-align: right;
+}
+
+.h2-stage__title span:last-child {
+    color: rgba(246, 241, 234, 0.55);
+}
+
+.h2-stage__hint {
+    position: absolute;
+    left: 50%;
+    bottom: max(28px, 5vh);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    margin: 0;
+    color: rgba(246, 241, 234, 0.82);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-align: center;
+    text-transform: uppercase;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.h2-stage__hint-line {
+    position: relative;
+    width: 1px;
+    height: 44px;
+    overflow: hidden;
+    background: rgba(246, 241, 234, 0.22);
+}
+
+.h2-stage__hint-line::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -50%;
+    width: 1px;
+    height: 50%;
+    background: #f6f1ea;
+    animation: h2-hint 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes h2-hint {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(300%);
+    }
+}
+
+/* ---------- Runway (scroll distance of the zoom) ---------- */
+
+.h2-runway {
+    height: 0;
+}
+
+.h2-flight.is-animated .h2-runway {
+    height: var(--h2-runway);
+}
+
+/* ---------- Order (the existing transfer form) ---------- */
+
+.h2-order {
+    position: relative;
+    z-index: 2;
+    margin-top: calc(var(--h2-stage-h) * -0.35);
+    padding: 22vh 0 12vh;
+    color: #fff;
+}
+
+.h2-flight:not(.is-animated) .h2-stage {
+    position: relative;
+}
+
+.h2-flight:not(.is-animated) .h2-order {
+    margin-top: 0;
+    padding-top: 96px;
+    background: linear-gradient(180deg, var(--h2-sky-deep) 0%, #4f93c4 55%, #8fc2d7 100%);
+}
+
+.h2-flight:not(.is-animated) .h2-horizon {
+    margin-top: 0;
+    height: 30vh;
+    background: linear-gradient(180deg, #8fc2d7 0%, var(--color-surface-secondary) 100%);
+}
+
+.h2-order__inner {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.82fr) minmax(460px, 1.18fr);
+    gap: 40px 56px;
+    align-items: start;
+}
+
+.h2-order__head {
+    padding-top: 12px;
+    text-shadow: 0 2px 22px rgba(0, 38, 84, 0.45);
+}
+
+.h2-order__eyebrow {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.h2-order__head h1 {
+    max-width: 10em;
+    margin: 16px 0 0;
+    color: #fff;
+    font-size: clamp(36px, 4.2vw, 62px);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+    text-transform: none;
+}
+
+.h2-order__lead {
+    max-width: 26em;
+    margin: 22px 0 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 18px;
+    line-height: 1.45;
+}
+
+.h2-order__points {
+    display: grid;
+    gap: 10px;
+    margin: 30px 0 0;
+    padding: 0;
+    list-style: none;
+    text-shadow: none;
+}
+
+.h2-order__points li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 14px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 16px;
+    background: rgba(8, 44, 86, 0.32);
+}
+
+.h2-order__points strong {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.h2-order__points span {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.h2-order__form {
+    position: relative;
+    min-width: 0;
+}
+
+.h2-order .transfer-search {
+    padding: 0;
+    background: transparent;
+}
+
+.h2-order .transfer-search__card {
+    box-shadow: 0 30px 80px rgba(4, 34, 72, 0.32), 0 6px 18px rgba(4, 34, 72, 0.12);
+}
+
+.h2-order__veil {
+    position: absolute;
+    inset: -14% -12%;
+    z-index: 3;
+    opacity: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(42% 30% at 28% 26%, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(46% 34% at 72% 44%, rgba(250, 252, 255, 0.98) 0%, rgba(250, 252, 255, 0) 72%),
+        radial-gradient(52% 30% at 40% 70%, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0) 70%),
+        radial-gradient(70% 60% at 50% 50%, rgba(236, 245, 255, 0.92) 0%, rgba(236, 245, 255, 0) 80%);
+    will-change: transform, opacity;
+}
+
+.h2-horizon {
+    position: relative;
+    z-index: 1;
+    height: 60vh;
+    margin-top: -20vh;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(143, 194, 215, 0) 0%, rgba(143, 194, 215, 0.55) 45%, var(--color-surface-secondary) 100%);
+}
+
+/* ---------- Light mode for weak devices ---------- */
+
+.h2-flight.is-lite .h2-sky__band--far,
+.h2-flight.is-lite .h2-cabin__glass {
+    display: none;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1024px) {
+    .h2-order__inner {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .h2-order__head h1 {
+        max-width: 14em;
+    }
+
+    .h2-order__points {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 1024px) and (orientation: portrait) {
+    .h2-flight {
+        --h2-layer-scale: 1;
+    }
+
+    .h2-stage__title {
+        font-size: clamp(30px, 7.4vw, 64px);
+    }
+
+    .h2-stage__title--left {
+        top: 11%;
+    }
+
+    .h2-stage__title--right {
+        top: auto;
+        bottom: calc(max(28px, 5vh) + 92px);
+    }
+}
+
+@media (max-width: 767px) {
+    .h2-flight {
+        --h2-runway: 160vh;
+        --h2-bleed: 28px;
+        --h2-layer-scale: 1;
+    }
+
+    .h2-cabin__shade-handle {
+        margin-bottom: -4px;
+    }
+
+    .h2-stage__title {
+        font-size: clamp(30px, 9.5vw, 44px);
+    }
+
+    .h2-stage__title--left {
+        top: 14%;
+    }
+
+    .h2-stage__title--right {
+        top: auto;
+        bottom: calc(max(28px, 5vh) + 92px);
+    }
+
+    .h2-stage__hint {
+        font-size: 11px;
+        letter-spacing: 0.16em;
+    }
+
+    .h2-order {
+        padding: 18vh 0 10vh;
+    }
+
+    .h2-order__lead {
+        font-size: 16px;
+    }
+
+    .h2-order__points {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .h2-sky__track,
+    .h2-stage__hint-line::after {
+        animation: none;
+    }
+}

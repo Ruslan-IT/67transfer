@@ -1,0 +1,196 @@
+/* Единый футер сайта. Подключается на всех страницах через layouts/app. */
+
+:root,
+[data-theme="light"] {
+    --home-footer-bg: #213650;
+    --home-footer-fg: #efe7dc;
+    --home-footer-muted: #c0c9d1;
+    --home-footer-line: #586b7e;
+}
+
+[data-theme="dark"] {
+    --home-footer-bg: var(--color-overlay);
+    --home-footer-fg: var(--color-overlay-text);
+    --home-footer-muted: var(--color-overlay-muted);
+    --home-footer-line: var(--color-overlay-line);
+}
+
+.home-footer {
+    --color-link-hover: #ffd21c;
+    padding: 34px 0 24px;
+    background: var(--home-footer-bg);
+    color: var(--home-footer-fg);
+}
+
+[data-theme="dark"] .home-footer {
+    --color-link-hover: #ffd21c;
+}
+
+.home-footer__top {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+.home-footer__logo {
+    display: block;
+    width: min(258px, 100%);
+    height: auto;
+    margin: 0 0 16px;
+}
+
+.home-footer p {
+    margin: 0;
+    color: var(--home-footer-muted);
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+.home-footer__contact {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    min-width: 0;
+}
+
+.home-footer__label {
+    color: var(--home-footer-muted);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+.home-footer__contact-row,
+.home-footer__messengers,
+.home-footer__socials {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px 20px;
+}
+
+.home-footer__address {
+    margin: 0;
+    color: var(--home-footer-muted);
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.home-footer a,
+.home-footer__cookie {
+    color: var(--home-footer-fg);
+    font: inherit;
+    font-size: 13px;
+    line-height: 1.5;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    background: none;
+    border: 0;
+    padding: 5px 0;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html.theme-ready:not(.theme-animating) .home-footer a,
+    html.theme-ready:not(.theme-animating) .home-footer__cookie {
+        transition: color 0.22s ease;
+    }
+
+    html.theme-ready:not(.theme-animating) .home-footer__icon {
+        transition: background-color 0.22s ease;
+    }
+}
+
+.home-footer a:hover,
+.home-footer a:focus-visible,
+.home-footer__cookie:hover,
+.home-footer__cookie:focus-visible {
+    color: var(--color-link-hover);
+}
+
+.home-footer__messengers a,
+.home-footer__socials a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    text-decoration: none;
+}
+
+.home-footer__icon {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    display: inline-block;
+    background-color: currentColor;
+    -webkit-mask: var(--home-footer-icon) center / contain no-repeat;
+    mask: var(--home-footer-icon) center / contain no-repeat;
+}
+
+.home-footer__legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 22px;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid var(--home-footer-line);
+}
+
+.home-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px 24px;
+    margin-top: 13px;
+    color: var(--home-footer-muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+@media (max-width: 760px) {
+    .home-footer {
+        padding: 28px 0 22px;
+    }
+
+    .home-footer__top {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .home-footer__contact,
+    .home-footer__contact-row,
+    .home-footer__messengers,
+    .home-footer__socials {
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
+    .home-footer__address {
+        text-align: left;
+    }
+
+    .home-footer__bottom {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+@media (max-width: 380px) {
+    .home-footer__legal {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+}
+
+@media (pointer: coarse) {
+    .home-footer a,
+    .home-footer__cookie {
+        min-height: 44px;
+    }
+}

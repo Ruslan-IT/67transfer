@@ -166,6 +166,10 @@
                 <span>Текст вопроса</span>
                 <textarea name="message" rows="5" required maxlength="2000"></textarea>
             </label>
+            <div class="hp-field" aria-hidden="true">
+                <label>Сайт<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label>
+            </div>
+            @include('partials.personal-data-consent')
             <button class="button" type="submit">
                 Отправить
                 <span>↗</span>

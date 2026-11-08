@@ -1,3 +1,46 @@
+(function () {
+    var root = document.documentElement;
+    var storageKey = "transfer-theme";
+
+    function currentTheme() {
+        return root.getAttribute("data-theme") === "dark" ? "dark" : "light";
+    }
+
+    var themeAnimTimer = null;
+
+    function paintTheme(theme, animate) {
+        if (animate) {
+            root.classList.add("theme-animating");
+            if (themeAnimTimer) {
+                clearTimeout(themeAnimTimer);
+            }
+            themeAnimTimer = setTimeout(function () {
+                root.classList.remove("theme-animating");
+                themeAnimTimer = null;
+            }, 280);
+        }
+
+        root.setAttribute("data-theme", theme);
+        document.querySelectorAll("[data-theme-choice]").forEach(function (button) {
+            var selected = button.getAttribute("data-theme-choice") === theme;
+            button.setAttribute("aria-pressed", selected ? "true" : "false");
+        });
+    }
+
+    document.querySelectorAll("[data-theme-choice]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            var theme = button.getAttribute("data-theme-choice") === "dark" ? "dark" : "light";
+            paintTheme(theme, true);
+            try {
+                localStorage.setItem(storageKey, theme);
+            } catch (e) {}
+        });
+    });
+
+    paintTheme(currentTheme(), false);
+    root.classList.add("theme-ready");
+})();
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const menuButton = document.querySelector(".menu-button");
@@ -274,8 +317,25 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    let contactSending = false;
+
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
+
+        if (contactSending) {
+            return;
+        }
+
+        const consent = form.querySelector('[name="personal_data_consent"]');
+
+        if (consent && !consent.checked) {
+            if (errorBox) {
+                errorBox.hidden = false;
+                errorBox.textContent = "Нужно отдельное согласие на обработку персональных данных.";
+            }
+
+            return;
+        }
 
         if (success) {
             success.hidden = true;
@@ -285,6 +345,8 @@ document.addEventListener("DOMContentLoaded", () => {
             errorBox.hidden = true;
             errorBox.textContent = "";
         }
+
+        contactSending = true;
 
         try {
             const response = await fetch(form.action, {
@@ -321,6 +383,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 errorBox.hidden = false;
                 errorBox.textContent = "Не удалось отправить сообщение. Попробуйте ещё раз.";
             }
+        } finally {
+            contactSending = false;
         }
     });
+});
+
+document.addEventListener("submit", (event) => {
+    const form = event.target;
+
+    if (!(form instanceof HTMLFormElement) || form.hasAttribute("data-contact-form") || form.hasAttribute("data-transfer-form")) {
+        return;
+    }
+
+    if (form.dataset.sent === "1") {
+        event.preventDefault();
+
+        return;
+    }
+
+    form.dataset.sent = "1";
 });
