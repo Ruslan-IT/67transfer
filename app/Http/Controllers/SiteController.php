@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Destination;
+use App\Models\Enquiry;
 use App\Models\Page;
 use App\Support\HomeBlocks;
 use App\Support\SiteEnquiry;
@@ -244,15 +245,20 @@ class SiteController extends Controller
         ]);
 
         if ($draft === null) {
+            logger()->warning('Transfer request store aborted: draft missing');
+
             return redirect()->route('transfer.request');
         }
 
-        if ($request->filled('company_website')) {
-            session()->forget('transfer.draft');
+        // Honeypot: никогда не показывать «заявка принята», если запись не создавалась.
+        // Старое имя company_website тоже учитываем (кэш/старые формы).
+        if ($request->filled('website_confirm') || $request->filled('company_website')) {
+            logger()->warning('Transfer request store honeypot filled', [
+                'ip' => $request->ip(),
+            ]);
+            session()->forget(['transfer.draft', 'transfer_contact_errors']);
 
-            return redirect()
-                ->route('transfer.request')
-                ->with('status', 'Заявка принята. Мы свяжемся с вами, чтобы согласовать трансфер.');
+            return redirect()->route('transfer.request');
         }
 
         $payload = $draft;
@@ -272,6 +278,9 @@ class SiteController extends Controller
         });
 
         if ($validator->fails()) {
+            logger()->info('Transfer request store validation failed', [
+                'keys' => array_keys($validator->errors()->toArray()),
+            ]);
             $errors = $this->enquiryErrorBag($validator);
 
             return redirect()
@@ -281,35 +290,72 @@ class SiteController extends Controller
                 ->withInput();
         }
 
+        logger()->info('Transfer request store validation passed');
+
         $validated = $validator->validated();
 
         if ($validated['trip'] === 'oneway') {
             unset($validated['return']);
         }
 
-        $stored = app(SiteEnquiry::class)->storeTransfer($validated);
-        $mailSent = true;
+        logger()->info('Transfer enquiry create start');
+
+        try {
+            $stored = app(SiteEnquiry::class)->storeTransfer($validated);
+        } catch (\Throwable $exception) {
+            report($exception);
+            logger()->error('Transfer enquiry create failed', [
+                'exception' => $exception::class,
+            ]);
+
+            return redirect()
+                ->route('transfer.request')
+                ->with('transfer_error', 'Не удалось сохранить заявку. Попробуйте ещё раз.')
+                ->withInput();
+        }
+
+        $enquiryId = $stored['enquiry']->getKey();
+
+        if (! $enquiryId || ! Enquiry::query()->whereKey($enquiryId)->exists()) {
+            logger()->error('Transfer enquiry create did not persist', [
+                'enquiry_id' => $enquiryId,
+                'duplicate' => $stored['duplicate'],
+            ]);
+
+            return redirect()
+                ->route('transfer.request')
+                ->with('transfer_error', 'Не удалось сохранить заявку. Попробуйте ещё раз.')
+                ->withInput();
+        }
+
+        logger()->info('Transfer enquiry create confirmed', [
+            'enquiry_id' => $enquiryId,
+            'duplicate' => $stored['duplicate'],
+        ]);
+
+        $mailQueued = true;
 
         if (! $stored['duplicate']) {
-            $mailSent = $this->sendSiteMail(
+            logger()->info('Transfer enquiry mail start', [
+                'enquiry_id' => $enquiryId,
+            ]);
+            $mailQueued = $this->sendSiteMail(
                 'Новая заявка на трансфер',
                 $this->enquiryBody($validated),
                 $this->replyAddress($validated),
             );
+            logger()->info('Transfer enquiry mail queued', [
+                'enquiry_id' => $enquiryId,
+                'mail_queued' => $mailQueued,
+            ]);
         }
-
-        logger()->info('Transfer enquiry stored', [
-            'enquiry_id' => $stored['enquiry']->id,
-            'duplicate' => $stored['duplicate'],
-            'mail_sent' => $mailSent,
-        ]);
 
         session()->forget(['transfer.draft', 'transfer_contact_errors']);
 
         return redirect()
             ->route('transfer.request')
-            ->with('status', $this->transferAcceptedMessage($mailSent))
-            ->with('status_mail_sent', $mailSent);
+            ->with('status', $this->transferAcceptedMessage($mailQueued))
+            ->with('status_mail_sent', $mailQueued);
     }
 
     public function destination(Destination $destination): View
@@ -1172,11 +1218,11 @@ class SiteController extends Controller
     }
 
     /**
-     * Письмо — дополнительная операция после сохранения заявки.
+     * Письмо — только после сохранения заявки.
      *
-     * @return bool false только если письмо заведомо нельзя отправить (нет получателя).
-     *              true — письмо поставлено в отправку после HTTP-ответа.
-     *              Ошибки SMTP не откатывают заявку и не блокируют ответ клиенту.
+     * @return bool false если отправка заведомо невозможна (нет получателя).
+     *              true если письмо поставлено в очередь после HTTP-ответа.
+     *              Ошибки SMTP не откатывают заявку и не меняют результат сохранения.
      */
     private function sendSiteMail(string $subject, string $body, ?string $replyTo = null): bool
     {
@@ -1190,6 +1236,7 @@ class SiteController extends Controller
 
         defer(function () use ($to, $subject, $body, $replyTo): void {
             try {
+                logger()->info('Site mail send attempt');
                 Mail::raw($body, function ($mail) use ($to, $subject, $replyTo): void {
                     $mail->to($to)->subject($subject);
 
@@ -1197,7 +1244,11 @@ class SiteController extends Controller
                         $mail->replyTo($replyTo);
                     }
                 });
+                logger()->info('Site mail send completed');
             } catch (\Throwable $exception) {
+                logger()->error('Site mail send failed', [
+                    'exception' => $exception::class,
+                ]);
                 report($exception);
             }
         });

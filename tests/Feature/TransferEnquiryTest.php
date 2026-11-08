@@ -443,6 +443,83 @@ class TransferEnquiryTest extends TestCase
         $this->assertCount(0, $this->messages());
     }
 
+    public function test_request_store_honeypot_does_not_claim_success_or_save(): void
+    {
+        $outbound = now()->addDays(14)->toDateString();
+        $return = now()->addDays(20)->toDateString();
+        $this->postJson(route('transfer.continue'), $this->tripPayload($outbound, $return))->assertOk();
+
+        $this->post(route('transfer.request.store'), [
+            'name' => 'Бот',
+            'phone' => '+34 600 111 222',
+            'messenger' => 'WhatsApp',
+            'flight_number' => 'IB999',
+            'website_confirm' => 'https://spam.example',
+        ])->assertRedirect(route('transfer.request'))
+            ->assertSessionMissing('status')
+            ->assertSessionMissing('status_mail_sent');
+
+        $this->assertDatabaseCount('enquiries', 0);
+        $this->assertCount(0, $this->messages());
+    }
+
+    public function test_request_store_legacy_honeypot_field_does_not_claim_success_or_save(): void
+    {
+        $outbound = now()->addDays(14)->toDateString();
+        $return = now()->addDays(20)->toDateString();
+        $this->postJson(route('transfer.continue'), $this->tripPayload($outbound, $return))->assertOk();
+
+        $this->post(route('transfer.request.store'), [
+            'name' => 'Автозаполнение',
+            'phone' => '+34 600 777 888',
+            'messenger' => 'Telegram',
+            'flight_number' => 'SU300',
+            'company_website' => 'https://autofill.example',
+        ])->assertRedirect(route('transfer.request'))
+            ->assertSessionMissing('status');
+
+        $this->assertDatabaseCount('enquiries', 0);
+        $this->assertCount(0, $this->messages());
+    }
+
+    public function test_request_store_reports_error_when_persist_fails(): void
+    {
+        $outbound = now()->addDays(14)->toDateString();
+        $return = now()->addDays(20)->toDateString();
+        $this->postJson(route('transfer.continue'), $this->tripPayload($outbound, $return))->assertOk();
+
+        $this->mock(\App\Support\SiteEnquiry::class, function ($mock): void {
+            $mock->shouldReceive('storeTransfer')
+                ->once()
+                ->andThrow(new \RuntimeException('persist failed'));
+        });
+
+        $this->post(route('transfer.request.store'), [
+            'name' => 'Ольга',
+            'phone' => '+34 600 444 555',
+            'messenger' => 'WhatsApp',
+            'flight_number' => 'VY400',
+        ])->assertRedirect(route('transfer.request'))
+            ->assertSessionHas('transfer_error', 'Не удалось сохранить заявку. Попробуйте ещё раз.')
+            ->assertSessionMissing('status');
+
+        $this->assertDatabaseCount('enquiries', 0);
+        $this->assertCount(0, $this->messages());
+    }
+
+    public function test_request_form_uses_safe_honeypot_field_name(): void
+    {
+        $outbound = now()->addDays(14)->toDateString();
+        $return = now()->addDays(20)->toDateString();
+        $this->postJson(route('transfer.continue'), $this->tripPayload($outbound, $return))->assertOk();
+
+        $this->get(route('transfer.request'))
+            ->assertOk()
+            ->assertSee('name="website_confirm"', false)
+            ->assertDontSee('name="company_website"', false)
+            ->assertDontSee('>Сайт<', false);
+    }
+
     public function test_json_enquiry_reports_mail_failure_without_dropping_record(): void
     {
         \Illuminate\Support\Facades\Mail::shouldReceive('raw')

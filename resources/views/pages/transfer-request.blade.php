@@ -190,7 +190,20 @@
                         <form class="transfer-request__form" method="post" action="{{ route('transfer.request.store') }}" novalidate data-request-form>
                             @csrf
                             <div class="hp-field" aria-hidden="true">
-                                <label>Сайт<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label>
+                                {{-- Не «Сайт/website»: менеджеры паролей часто автозаполняют такие поля и срабатывает honeypot без сохранения заявки. --}}
+                                <label>
+                                    <span>Leave blank</span>
+                                    <input
+                                        type="text"
+                                        name="website_confirm"
+                                        value=""
+                                        tabindex="-1"
+                                        autocomplete="off"
+                                        data-lpignore="true"
+                                        data-1p-ignore="true"
+                                        data-form-type="other"
+                                    >
+                                </label>
                             </div>
                             @if (! empty($draft['personal_data_consent']))
                                 <input type="hidden" name="personal_data_consent" value="1">
